@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { AddToCart } from "@/components/cart/AddToCart";
 import { formatCurrency } from "@/lib/currency";
 import type { Product } from "@/types/product";
 
@@ -40,6 +41,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <span className="ml-1 text-slate-500">({product.rating.count})</span>
         </p>
       </div>
+      <AddToCart product={product} />
     </article>
   );
 }

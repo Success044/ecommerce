@@ -14,3 +14,10 @@ export interface Product {
 }
 
 export type SortOrder = "asc" | "desc";
+
+export interface ProductFilterValues {
+  search: string;
+  category: string;
+  minPrice: string;
+  maxPrice: string;
+}
