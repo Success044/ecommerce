@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { AddToCart } from "@/components/cart/AddToCart";
 import { formatCurrency } from "@/lib/currency";
 import type { Product } from "@/types/product";
 
@@ -37,6 +38,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         <p className="mt-6 text-3xl font-semibold">
           {formatCurrency(product.price)}
         </p>
+        <AddToCart product={product} />
         <div className="mt-8 border-t border-slate-200 pt-6">
           <h2 className="text-base font-semibold">Description</h2>
           <p className="mt-3 text-base leading-7 whitespace-pre-line text-slate-600 wrap-break-word">
