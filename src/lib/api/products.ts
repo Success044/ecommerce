@@ -11,6 +11,23 @@ function getApiUrl(): string {
   return apiUrl.replace(/\/+$/, "");
 }
 
+function isRating(value: unknown): value is Product["rating"] {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  return (
+    "rate" in value &&
+    typeof value.rate === "number" &&
+    value.rate >= 0 &&
+    value.rate <= 5 &&
+    "count" in value &&
+    typeof value.count === "number" &&
+    Number.isInteger(value.count) &&
+    value.count >= 0
+  );
+}
+
 function isProduct(value: unknown): value is Product {
   if (typeof value !== "object" || value === null) {
     return false;
@@ -34,16 +51,7 @@ function isProduct(value: unknown): value is Product {
     "image" in value &&
     typeof value.image === "string" &&
     "rating" in value &&
-    typeof value.rating === "object" &&
-    value.rating !== null &&
-    "rate" in value.rating &&
-    typeof value.rating.rate === "number" &&
-    value.rating.rate >= 0 &&
-    value.rating.rate <= 5 &&
-    "count" in value.rating &&
-    typeof value.rating.count === "number" &&
-    Number.isInteger(value.rating.count) &&
-    value.rating.count >= 0
+    isRating(value.rating)
   );
 }
 
@@ -51,7 +59,9 @@ export async function getProducts(sort: SortOrder = "asc"): Promise<Product[]> {
   const data = await fetcher(`${getApiUrl()}/products?sort=${sort}`);
 
   if (!Array.isArray(data) || !data.every(isProduct)) {
-    throw new ApiError("The store returned invalid products. Please try again.");
+    throw new ApiError(
+      "The store returned invalid products. Please try again.",
+    );
   }
 
   return data;
@@ -79,7 +89,9 @@ export async function getProduct(id: number): Promise<Product | null> {
   }
 
   if (!isProduct(data)) {
-    throw new ApiError("The store returned an invalid product. Please try again.");
+    throw new ApiError(
+      "The store returned an invalid product. Please try again.",
+    );
   }
 
   return data;
@@ -88,8 +100,13 @@ export async function getProduct(id: number): Promise<Product | null> {
 export async function getCategories(): Promise<string[]> {
   const data = await fetcher(`${getApiUrl()}/products/categories`);
 
-  if (!Array.isArray(data) || !data.every((value) => typeof value === "string")) {
-    throw new ApiError("The store returned invalid categories. Please try again.");
+  if (
+    !Array.isArray(data) ||
+    !data.every((value) => typeof value === "string")
+  ) {
+    throw new ApiError(
+      "The store returned invalid categories. Please try again.",
+    );
   }
 
   return data;
