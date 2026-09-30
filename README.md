@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+﻿# Task A - E-commerce Dashboard
 
-## Getting Started
+An e-commerce dashboard built with Next.js, TypeScript, and the Fake Store API. The cart uses Zustand and is saved in localStorage.
 
-First, run the development server:
+## Run locally
+
+Developed with Node.js 24 and npm.
+
+```bash
+npm ci
+```
+
+Copy `.env.example` to `.env.local` and make sure it contains:
+
+```dotenv
+FAKE_STORE_API_URL=https://fakestoreapi.com
+```
+
+Then start the app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000. The home page redirects to `/products`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The API URL is required. If you change it, restart the server. Product data and images need an internet connection.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
 
-## Learn More
+- Product listing with images, prices, categories, and ratings.
+- Ascending and descending sorting through the API.
+- Search by name, category and price filters, and pagination.
+- A details page for each product.
+- Add to cart, change quantities, remove items, and view the total.
+- Cart saved across page reloads using localStorage.
+- Loading, error, and empty states, with responsive layouts.
 
-To learn more about Next.js, take a look at the following resources:
+## Implementation notes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The listing and product details pages fetch data in Server Components. Sorting is sent to the API through the `sort` parameter; it sorts by product ID.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Search and filters run in the browser on the fetched products. Pagination is applied after filtering, with eight products per page.
 
-## Deploy on Vercel
+API calls use the shared native fetch wrapper in `src/lib/api/fetcher.ts`. Cart actions are handled locally and do not call the API.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Build and checks
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run lint
+npm run build
+npm start
+```
+
+The production build also checks TypeScript. To run a separate type check after the build:
+
+```bash
+npx tsc --noEmit
+```
+
+Set `FAKE_STORE_API_URL` in the deployment environment as well.
