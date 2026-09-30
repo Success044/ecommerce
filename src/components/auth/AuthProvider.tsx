@@ -78,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user = { username: saved.username };
       }
     } catch {
-      //
+      // let it be...
     }
     store.setState({ user, hasHydrated: true });
   }, [store]);

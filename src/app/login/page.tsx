@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { safeReturnTo } from "@/lib/auth/redirect";
+
+export const metadata: Metadata = {
+  title: "Log in",
+  description: "Log in to your store account to use your shopping cart.",
+  robots: { index: false, follow: true },
+};
 
 export default async function LoginPage({
   searchParams,
