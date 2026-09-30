@@ -14,6 +14,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         <Image
           src={product.image}
           alt={product.title}
+          loading="eager"
           fill
           sizes="(max-width: 1023px) 100vw, 50vw"
           className="object-contain"

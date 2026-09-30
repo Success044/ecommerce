@@ -8,9 +8,9 @@ interface ProductGridProps {
 export function ProductGrid({ products }: ProductGridProps) {
   return (
     <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {products.map((product) => (
+      {products.map((product, index) => (
         <li key={product.id}>
-          <ProductCard product={product} />
+          <ProductCard product={product} loading={index < 4 ? "eager" : "lazy"} />
         </li>
       ))}
     </ul>

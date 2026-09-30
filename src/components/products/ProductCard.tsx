@@ -6,9 +6,10 @@ import type { Product } from "@/types/product";
 
 interface ProductCardProps {
   product: Product;
+  loading?: "eager" | "lazy";
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, loading = "lazy" }: ProductCardProps) {
   return (
     <article className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-5">
       <Link href={`/products/${product.id}`} className="group rounded-md">
@@ -16,6 +17,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <Image
             src={product.image}
             alt={product.title}
+            loading={loading}
             fill
             sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 33vw, 25vw"
             className="object-contain"
