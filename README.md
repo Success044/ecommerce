@@ -31,6 +31,7 @@ The API URL is required. If you change it, restart the server. Product data and 
 - Product listing with images, prices, categories, and ratings.
 - Ascending and descending sorting through the API.
 - Search by name, category and price filters, and pagination.
+- Shareable filter URLs with browser back and forward support.
 - A details page for each product.
 - Add to cart, change quantities, remove items, and view the total.
 - Cart saved across page reloads using localStorage.
@@ -42,6 +43,8 @@ The API URL is required. If you change it, restart the server. Product data and 
 The listing and product details pages fetch data in Server Components. Sorting is sent to the API through the `sort` parameter; it sorts by product ID.
 
 Search and filters run in the browser on the fetched products. Pagination is applied after filtering, with eight products per page.
+
+The URL stores `search`, `category`, `minPrice`, `maxPrice`, `sort`, and `page`, so opening a shared link or using browser back and forward restores the view. For example: `/products?category=electronics&sort=asc&minPrice=10&maxPrice=200`. Changing filters or sorting returns to page one. Reset filters keeps the selected sort order. Consecutive typing within a filter field updates one history entry; category and page changes add separate entries. Filter and page changes use browser history without refetching the catalog; changing sort still fetches the API on the server.
 
 API calls use the shared native fetch wrapper in `src/lib/api/fetcher.ts`. Cart actions are handled locally and do not call the API.
 
