@@ -1,15 +1,6 @@
 import type { Product, SortOrder } from "@/types/product";
 import { ApiError, fetcher } from "./fetcher";
-
-function getApiUrl(): string {
-  const apiUrl = process.env.FAKE_STORE_API_URL?.trim();
-
-  if (!apiUrl) {
-    throw new ApiError("The store is not configured. Please try again later.");
-  }
-
-  return apiUrl.replace(/\/+$/, "");
-}
+import { getApiUrl } from "./config";
 
 function isRating(value: unknown): value is Product["rating"] {
   if (typeof value !== "object" || value === null) {

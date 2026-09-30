@@ -11,13 +11,13 @@ export interface CartState {
   removeItem: (productId: number) => void;
 }
 
-export function createCartStore() {
+export function createCartStore(canUseCart: () => boolean) {
   return createStore<CartState>()((set, get) => ({
     items: [],
     hasHydrated: false,
     storageError: null,
     addItem: (product, quantity) => {
-      if (!isValidQuantity(quantity)) return false;
+      if (!canUseCart() || !isValidQuantity(quantity)) return false;
 
       const existing = get().items.find((item) => item.product.id === product.id);
       const nextQuantity = (existing?.quantity ?? 0) + quantity;
@@ -32,12 +32,13 @@ export function createCartStore() {
       return true;
     },
     updateQuantity: (productId, quantity) => {
-      if (!isValidQuantity(quantity)) return;
+      if (!canUseCart() || !isValidQuantity(quantity)) return;
       set((state) => ({
         items: state.items.map((item) => item.product.id === productId ? { ...item, quantity } : item),
       }));
     },
     removeItem: (productId) => {
+      if (!canUseCart()) return;
       set((state) => ({ items: state.items.filter((item) => item.product.id !== productId) }));
     },
   }));
