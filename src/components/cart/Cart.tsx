@@ -1,13 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useCartStore } from "./CartProvider";
 import { CartItem } from "./CartItem";
 import { CartSummary } from "./CartSummary";
+import { CartSkeleton } from "./CartSkeleton";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 export function Cart() {
+  const { user, hasHydrated: authHydrated } = useAuth();
+  const router = useRouter();
   const items = useCartStore((state) => state.items);
   const hasHydrated = useCartStore((state) => state.hasHydrated);
   const storageError = useCartStore((state) => state.storageError);
@@ -15,7 +20,11 @@ export function Cart() {
   const removeItem = useCartStore((state) => state.removeItem);
   const [removedMessage, setRemovedMessage] = useState("");
 
-  if (!hasHydrated) return <p role="status" className="text-slate-600">Loading your cart...</p>;
+  useEffect(() => {
+    if (authHydrated && !user) router.replace("/login?returnTo=%2Fcart");
+  }, [authHydrated, user, router]);
+
+  if (!authHydrated || !user || !hasHydrated) return <CartSkeleton />;
 
   return (
     <>

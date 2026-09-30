@@ -4,14 +4,22 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { useStore } from "zustand";
 import { restoreCart } from "@/lib/cart";
 import { createCartStore, type CartState, type CartStore } from "@/stores/cart-store";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 const CartContext = createContext<CartStore | null>(null);
-const storageKey = "ecommerce-cart";
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [store] = useState(createCartStore);
+  const { user } = useAuth();
+  return <CartSession key={user?.username ?? "guest"}>{children}</CartSession>;
+}
+
+function CartSession({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+  const [store] = useState(() => createCartStore(() => Boolean(user)));
 
   useEffect(() => {
+    if (!user) return;
+    const storageKey = `ecommerce-cart:${user.username}`;
     try {
       const saved = window.localStorage.getItem(storageKey);
       const items = saved === null ? [] : restoreCart(JSON.parse(saved));
@@ -35,7 +43,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
       }
     });
-  }, [store]);
+  }, [store, user]);
 
   return <CartContext.Provider value={store}>{children}</CartContext.Provider>;
 }

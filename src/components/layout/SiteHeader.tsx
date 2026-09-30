@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CartLink } from "@/components/cart/CartLink";
+import { AuthButton } from "@/components/auth/AuthButton";
 
 export function SiteHeader() {
   return (
@@ -8,7 +9,7 @@ export function SiteHeader() {
         <Link href="/products" className="text-xl font-semibold tracking-tight">
           Store
         </Link>
-        <nav aria-label="Main navigation" className="flex items-center gap-1">
+        <nav aria-label="Main navigation" className="flex flex-wrap items-center justify-end gap-1">
           <Link
             href="/products"
             className="rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
@@ -16,6 +17,7 @@ export function SiteHeader() {
             Products
           </Link>
           <CartLink />
+          <AuthButton />
         </nav>
       </div>
     </header>
