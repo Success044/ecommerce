@@ -26,19 +26,34 @@ export function AddToCart({ product }: { product: CartProduct }) {
     }
     if (!hasHydrated) return;
     const added = addItem(product, quantity);
-    setMessage(added ? `Added ${quantity} to your cart.` : "Choose a valid quantity.");
+    setMessage(added ? `Added ${quantity} to cart.` : "Choose a valid quantity.");
   }
 
   return (
     <form onSubmit={handleSubmit} className="mt-5 border-t border-slate-200 pt-5">
-      <div className="flex flex-wrap items-end gap-3">
-        <QuantityInput value={quantity} disabled={!user || !hasHydrated} onChange={(next) => { setQuantity(next); setMessage(""); }} />
-        <button type="submit" disabled={!authHydrated || (Boolean(user) && !hasHydrated)} className="min-h-11 flex-1 rounded-md bg-slate-900 px-4 text-sm font-medium whitespace-nowrap text-white hover:bg-slate-700 disabled:opacity-50">
-          {user ? "Add to cart" : "Log in to add"}
-        </button>
+      <QuantityInput
+        value={quantity}
+        disabled={!user || !hasHydrated}
+        onChange={(next) => {
+          setQuantity(next);
+          setMessage("");
+        }}
+      />
+      <button
+        type="submit"
+        disabled={!authHydrated || (Boolean(user) && !hasHydrated)}
+        className="mt-3 min-h-11 w-full rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white enabled:hover:bg-slate-800 enabled:active:bg-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {user ? "Add to cart" : "Log in to add"}
+      </button>
+      <div className="mt-2 grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 text-xs">
+        <p role="status" className="text-slate-600">{message}</p>
+        {message.startsWith("Added") && (
+          <Link href="/cart" className="inline-flex min-h-11 items-center rounded-sm font-medium text-slate-900 underline underline-offset-4 hover:text-slate-600">
+            View cart
+          </Link>
+        )}
       </div>
-      <p role="status" className="mt-2 min-h-5 text-sm text-slate-600">{message}</p>
-      {message.startsWith("Added") && <Link href="/cart" className="text-sm font-medium underline">View cart</Link>}
     </form>
   );
 }
