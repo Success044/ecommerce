@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useRef, useTransition } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Pagination } from "@/components/ui/Pagination";
 import { filterProducts, getPriceRangeError, paginateProducts } from "@/lib/products";
+import { getProductFilters, getProductPage, getProductsUrl } from "@/lib/product-query";
 import type { Product, ProductFilterValues, SortOrder } from "@/types/product";
 import { ProductFilters } from "./ProductFilters";
 import { ProductGrid } from "./ProductGrid";
@@ -22,23 +23,51 @@ interface ProductExplorerProps {
 
 export function ProductExplorer({ products, categories, sort }: ProductExplorerProps) {
   const router = useRouter();
-  const [filters, setFilters] = useState(initialFilters);
-  const [pagination, setPagination] = useState({ page: 1, sort });
+  const searchParams = useSearchParams();
+  const lastEditedUrl = useRef<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const filters = getProductFilters(searchParams);
   const priceError = getPriceRangeError(filters);
   const filteredProducts = filterProducts(products, filters);
-  const page = pagination.sort === sort ? pagination.page : 1;
+  const page = getProductPage(searchParams);
   const result = paginateProducts(filteredProducts, page, pageSize);
 
+  function updateClientUrl(url: string, replace = false) {
+    if (url === `${window.location.pathname}${window.location.search}`) return;
+
+    if (replace) {
+      window.history.replaceState(null, "", url);
+    } else {
+      window.history.pushState(null, "", url);
+    }
+  }
+
   function handleFiltersChange(nextFilters: ProductFilterValues) {
-    setFilters(nextFilters);
-    setPagination({ page: 1, sort });
+    const params = new URLSearchParams(window.location.search);
+    const url = getProductsUrl(params, { ...nextFilters, page: "1" });
+    const isTyping = nextFilters.category === filters.category;
+    const replace = isTyping && lastEditedUrl.current === window.location.href;
+
+    updateClientUrl(url, replace);
+    lastEditedUrl.current = isTyping ? window.location.href : null;
+  }
+
+  function handleReset() {
+    lastEditedUrl.current = null;
+    const params = new URLSearchParams(window.location.search);
+    updateClientUrl(getProductsUrl(params, { ...initialFilters, page: "1" }));
+  }
+
+  function handlePageChange(nextPage: number) {
+    const params = new URLSearchParams(window.location.search);
+    updateClientUrl(getProductsUrl(params, { page: String(nextPage) }));
   }
 
   function handleSortChange(nextSort: SortOrder) {
     if (nextSort === sort) return;
-    setPagination({ page: 1, sort: nextSort });
-    startTransition(() => router.push(`/products?sort=${nextSort}`, { scroll: false }));
+    const params = new URLSearchParams(window.location.search);
+    const url = getProductsUrl(params, { sort: nextSort, page: "1" });
+    startTransition(() => router.push(url, { scroll: false }));
   }
 
   return (
@@ -55,7 +84,8 @@ export function ProductExplorer({ products, categories, sort }: ProductExplorerP
         priceError={priceError}
         disabled={isPending}
         onChange={handleFiltersChange}
-        onReset={() => handleFiltersChange(initialFilters)}
+        onBlur={() => { lastEditedUrl.current = null; }}
+        onReset={handleReset}
       />
       {isPending ? <ProductGridSkeleton /> : filteredProducts.length === 0 ? (
         <EmptyState
@@ -65,7 +95,7 @@ export function ProductExplorer({ products, categories, sort }: ProductExplorerP
       ) : (
         <>
           <ProductGrid products={result.products} />
-          <Pagination currentPage={result.currentPage} totalPages={result.totalPages} onPageChange={(nextPage) => setPagination({ page: nextPage, sort })} />
+          <Pagination currentPage={result.currentPage} totalPages={result.totalPages} onPageChange={handlePageChange} />
         </>
       )}
     </>
