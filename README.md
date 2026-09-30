@@ -14,6 +14,7 @@ Copy `.env.example` to `.env.local` and make sure it contains:
 
 ```dotenv
 FAKE_STORE_API_URL=https://fakestoreapi.com
+SITE_URL=http://localhost:3000
 ```
 
 Then start the app:
@@ -36,6 +37,7 @@ The API URL is required. If you change it, restart the server. Product data and 
 - Add to cart, change quantities, remove items, and view the total.
 - Cart saved across page reloads using localStorage.
 - Login through the Fake Store API, with cart access restricted to logged-in users.
+- Page metadata, Product JSON-LD, and a sitemap linked from robots.txt.
 - Loading, error, and empty states, with responsive layouts.
 
 ## Implementation notes
@@ -56,6 +58,10 @@ Carts are stored separately for each username in localStorage. Logging out hides
 
 Use an existing Fake Store test account to log in.
 
+Product pages generate titles, descriptions, canonical URLs and Open Graph metadata from the same product data used by the page. A request-scoped cache shares the product lookup between metadata and page rendering. JSON-LD includes the displayed product, price in USD and ratings, with script content escaped before embedding it in HTML.
+
+`/sitemap.xml` lists `/products` and each product detail URL using the API catalog. It is generated at request time and requires the API to be available. The API does not supply modification dates, so the sitemap omits them. `/robots.txt` points crawlers to the sitemap. Login, cart and catalog query variants use `noindex`; the base catalog and product detail pages remain indexable.
+
 ## Build and checks
 
 ```bash
@@ -70,4 +76,4 @@ The production build also checks TypeScript. To run a separate type check after 
 npx tsc --noEmit
 ```
 
-Set `FAKE_STORE_API_URL` in the deployment environment as well.
+Set `FAKE_STORE_API_URL` and `SITE_URL` in the deployment environment before building. `SITE_URL` is the public site origin, such as `https://yourStore.example`, and must include `http://` or `https://`. It defaults to `http://localhost:3000` for local development. Use actual deployed origin so canonical links, structured data and sitemap URLs point to the live site.

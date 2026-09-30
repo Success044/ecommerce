@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { ProductExplorer } from "@/components/products/ProductExplorer";
 import { ProductGridSkeleton } from "@/components/products/ProductGridSkeleton";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
@@ -6,9 +7,30 @@ import { getCategories, getProducts } from "@/lib/api/products";
 import type { SortOrder } from "@/types/product";
 
 interface ProductsPageProps {
-  searchParams: Promise<{
-    sort?: string | string[];
-  }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
+
+export async function generateMetadata({
+  searchParams,
+}: ProductsPageProps): Promise<Metadata> {
+  const query = await searchParams;
+  const hasQuery = Object.keys(query).length > 0;
+  const description =
+    "Browse products by category, compare prices and ratings, and find your next purchase.";
+
+  return {
+    title: "Products",
+    description,
+    alternates: hasQuery ? undefined : { canonical: "/products" },
+    robots: { index: !hasQuery, follow: true },
+    openGraph: {
+      title: "Products | Store",
+      description,
+      url: "/products",
+      siteName: "Store",
+      type: "website",
+    },
+  };
 }
 
 export default async function ProductsPage({

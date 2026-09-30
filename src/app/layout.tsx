@@ -2,10 +2,15 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import { getSiteUrl } from "@/lib/seo";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Store",
+  metadataBase: getSiteUrl(),
+  title: {
+    default: "Store",
+    template: "%s | Store",
+  },
   description: "Browse products and find what you need.",
 };
 
