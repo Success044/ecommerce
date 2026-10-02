@@ -63,7 +63,7 @@ Authentication is basic in this version. Cart access is checked in the browser, 
 
 ## Production and scalability
 
-Before using this for a real store, authentication would need signed, expiring sessions in HttpOnly cookies and server-side access checks. Logout and session expiry would also need to be handled on the server.
+Authentication would need signed, expiring sessions in HttpOnly cookies and server-side access checks. Logout and session expiry would also need to be handled on the server.
 
 Multiple server instances would need the same session configuration. A shared session store would be needed if sessions must be revoked immediately. Product prices would also need to be verified on the server before taking payment.
 
