@@ -23,12 +23,6 @@ export async function loginAction(
     await login({ username: username.trim(), password });
     return { user: { username: username.trim() }, error: null };
   } catch (error) {
-    console.warn("Login request failed", {
-      status: error instanceof ApiError ? error.status : undefined,
-      message:
-        error instanceof ApiError ? error.message : "Unexpected login error.",
-    });
-
     return {
       user: null,
       error:
