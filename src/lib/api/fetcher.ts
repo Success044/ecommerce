@@ -30,6 +30,19 @@ export async function fetcher(
   }
 
   if (!response.ok) {
+    const endpoint = new URL(response.url || url);
+
+    console.warn("Store API request failed", {
+      endpoint: `${endpoint.origin}${endpoint.pathname}`,
+      method: options.method ?? "GET",
+      status: response.status,
+      statusText: response.statusText,
+      server: response.headers.get("server"),
+      contentType: response.headers.get("content-type"),
+      cfMitigated: response.headers.get("cf-mitigated"),
+      cfRay: response.headers.get("cf-ray"),
+    });
+
     throw new ApiError("Unable to load store data. Please try again.", {
       status: response.status,
     });
