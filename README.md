@@ -25,7 +25,7 @@ Start the development server:
 npm run dev
 ```
 
-Open http://localhost:3000. You'll be redirected to `/products`. The API URL is required, and products and images need an internet connection. Restart the server after changing the environment variables.
+Open http://localhost:3000. You'll be redirected to `/products`. The API URL defaults to `https://fakestoreapi.com` when `FAKE_STORE_API_URL` is missing or blank. Products and images need an internet connection. Restart the server after changing the environment variables.
 
 ## Features
 
@@ -69,7 +69,7 @@ Multiple server instances would need the same session configuration. A shared se
 
 These are future improvements. The cart stays in Zustand and localStorage for Now.
 
-When deploying, set `FAKE_STORE_API_URL` and change `SITE_URL` to the site's public origin before building. `SITE_URL` must include `http://` or `https://`; it defaults to localhost. Metadata and sitemap links use this value.
+When deploying, change `SITE_URL` to the site's public origin before building. `SITE_URL` must include `http://` or `https://`; it defaults to localhost. Metadata and sitemap links use this value. Set `FAKE_STORE_API_URL` if you want to override the default Fake Store API. Product requests, login requests, and the image allowlist use the same API URL.
 
 ## Build and checks
 

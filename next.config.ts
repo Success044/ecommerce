@@ -1,11 +1,12 @@
 import type { NextConfig } from "next";
+import { getApiUrl } from "./src/lib/api/config";
 
-const apiUrl = process.env.FAKE_STORE_API_URL?.trim();
+const apiUrl = getApiUrl();
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
   images: {
-    remotePatterns: apiUrl ? [new URL("/img/**", apiUrl)] : [],
+    remotePatterns: [new URL("/img/**", apiUrl)],
   },
 };
 
