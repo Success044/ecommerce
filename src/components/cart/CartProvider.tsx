@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, type ReactNode } from "react";
 import { useStore } from "zustand";
 import { restoreCart } from "@/lib/cart";
 import { createCartStore, type CartState, type CartStore } from "@/stores/cart-store";
@@ -10,16 +10,15 @@ const CartContext = createContext<CartStore | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
-  return <CartSession key={user?.username ?? "guest"}>{children}</CartSession>;
-}
-
-function CartSession({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
-  const [store] = useState(() => createCartStore(() => Boolean(user)));
+  const username = user?.username ?? null;
+  const store = useMemo(
+    () => createCartStore(() => username !== null),
+    [username],
+  );
 
   useEffect(() => {
-    if (!user) return;
-    const storageKey = `ecommerce-cart:${user.username}`;
+    if (username === null) return;
+    const storageKey = `ecommerce-cart:${username}`;
     try {
       const saved = window.localStorage.getItem(storageKey);
       const items = saved === null ? [] : restoreCart(JSON.parse(saved));
@@ -43,7 +42,7 @@ function CartSession({ children }: { children: ReactNode }) {
         }
       }
     });
-  }, [store, user]);
+  }, [store, username]);
 
   return <CartContext.Provider value={store}>{children}</CartContext.Provider>;
 }
