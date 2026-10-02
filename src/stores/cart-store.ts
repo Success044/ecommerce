@@ -26,7 +26,11 @@ export function createCartStore(canUseCart: () => boolean) {
       const { id, title, price, image } = product;
       set((state) => ({
         items: existing
-          ? state.items.map((item) => item.product.id === id ? { ...item, quantity: nextQuantity } : item)
+          ? state.items.map((item) =>
+              item.product.id === id
+                ? { ...item, quantity: nextQuantity }
+                : item,
+            )
           : [...state.items, { product: { id, title, price, image }, quantity }],
       }));
       return true;
@@ -34,12 +38,16 @@ export function createCartStore(canUseCart: () => boolean) {
     updateQuantity: (productId, quantity) => {
       if (!canUseCart() || !isValidQuantity(quantity)) return;
       set((state) => ({
-        items: state.items.map((item) => item.product.id === productId ? { ...item, quantity } : item),
+        items: state.items.map((item) =>
+          item.product.id === productId ? { ...item, quantity } : item,
+        ),
       }));
     },
     removeItem: (productId) => {
       if (!canUseCart()) return;
-      set((state) => ({ items: state.items.filter((item) => item.product.id !== productId) }));
+      set((state) => ({
+        items: state.items.filter((item) => item.product.id !== productId),
+      }));
     },
   }));
 }

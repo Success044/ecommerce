@@ -9,7 +9,7 @@ import {
 } from "react";
 import { createStore, useStore } from "zustand";
 import { loginAction } from "@/app/login/actions";
-import type { AuthUser } from "@/types/auth";
+import type { AuthUser, LoginCredentials } from "@/types/auth";
 
 const storageKey = "ecommerce-auth";
 
@@ -18,10 +18,7 @@ function createAuthStore() {
     user: AuthUser | null;
     hasHydrated: boolean;
     storageError: string | null;
-    login: (credentials: {
-      username: string;
-      password: string;
-    }) => Promise<string | null>;
+    login: (credentials: LoginCredentials) => Promise<string | null>;
     logout: () => void;
   }>()((set) => ({
     user: null,
