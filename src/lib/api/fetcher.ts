@@ -36,7 +36,8 @@ export async function fetcher(
   }
 
   try {
-    return await response.json();
+    const body = await response.text();
+    return body.trim() === "" ? null : JSON.parse(body);
   } catch (cause) {
     throw new ApiError("The store returned an invalid response. Please try again.", {
       status: response.status,

@@ -2,12 +2,11 @@
 
 import { login } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/fetcher";
-import type { LoginResult } from "@/types/auth";
+import type { LoginCredentials, LoginResult } from "@/types/auth";
 
-export async function loginAction(credentials: {
-  username: string;
-  password: string;
-}): Promise<LoginResult> {
+export async function loginAction(
+  credentials: LoginCredentials,
+): Promise<LoginResult> {
   const { username, password } = credentials;
   if (
     typeof username !== "string" ||
