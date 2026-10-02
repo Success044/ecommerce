@@ -71,19 +71,6 @@ These are future improvements. The cart stays in Zustand and localStorage for No
 
 When deploying, change `SITE_URL` to the site's public origin before building. `SITE_URL` must include `http://` or `https://`; it defaults to localhost. Metadata and sitemap links use this value. Set `FAKE_STORE_API_URL` if you want to override the default Fake Store API. Product requests, login requests, and the image allowlist use the same API URL.
 
-### Deploying to Vercel
-
-Local `.env` files are ignored by Git and are not included when Vercel deploys the repository. In your Vercel project's **Settings > Environment Variables**, set:
-
-| Name | Value |
-| --- | --- |
-| `FAKE_STORE_API_URL` | `https://fakestoreapi.com` (optional with the default above) |
-| `SITE_URL` | Your exact public site origin, including `https://` |
-
-Select **Production** and **Preview** for the environments you use. Redeploy after changing these values; existing deployments keep their previous environment variables.
-
-If products and login both fail, check the API URL first: both depend on the same service. If the configuration is correct, check Vercel runtime logs for a failed API request. A `DEPLOYMENT_NOT_FOUND` response means the URL does not point to an available Vercel deployment; copy the exact production URL from the project dashboard.
-
 ## Build and checks
 
 ```bash
